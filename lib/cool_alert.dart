@@ -20,6 +20,15 @@ enum CoolAlertAnimType {
 
 /// CoolAlert.
 class CoolAlert {
+  static var _isShowing = false;
+
+  static close(BuildContext context) {
+    if (_isShowing) {
+      _isShowing = false;
+      Navigator.of(context, rootNavigator: true).pop();
+    }
+  }
+
   static Future show({
     /// BuildContext
     required BuildContext context,
@@ -92,8 +101,10 @@ class CoolAlert {
     /// Detemines if the animation loops or not
     bool loopAnimation = false,
   }) {
+    _isShowing = true;
     if (autoCloseDuration != null) {
       Future.delayed(autoCloseDuration, () {
+        _isShowing = false;
         Navigator.of(context, rootNavigator: true).pop();
       });
     }
@@ -160,10 +171,13 @@ class CoolAlert {
       },
       transitionDuration: Duration(milliseconds: 200),
       barrierDismissible:
-          autoCloseDuration != null ? false : barrierDismissible,
+      autoCloseDuration != null ? false : barrierDismissible,
       barrierLabel: '',
       context: context,
       pageBuilder: (context, _, __) => Container(),
-    );
+    ).then((value) {
+      _isShowing = false;
+      return value;
+    });
   }
 }
