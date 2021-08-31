@@ -22,7 +22,7 @@ enum CoolAlertAnimType {
 class CoolAlert {
   static var _isShowing = false;
 
-  static close(BuildContext context) {
+  static void close(BuildContext context) {
     if (_isShowing) {
       _isShowing = false;
       Navigator.of(context, rootNavigator: true).pop();
@@ -133,13 +133,16 @@ class CoolAlert {
       loopAnimation: loopAnimation,
     );
 
-    final child = AlertDialog(
-      contentPadding: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(borderRadius),
-      ),
-      content: CoolAlertContainer(
-        options: options,
+    final child = WillPopScope(
+      onWillPop: () async => false,
+      child: AlertDialog(
+        contentPadding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+        content: CoolAlertContainer(
+          options: options,
+        ),
       ),
     );
 
@@ -171,7 +174,7 @@ class CoolAlert {
       },
       transitionDuration: Duration(milliseconds: 200),
       barrierDismissible:
-      autoCloseDuration != null ? false : barrierDismissible,
+          autoCloseDuration != null ? false : barrierDismissible,
       barrierLabel: '',
       context: context,
       pageBuilder: (context, _, __) => Container(),
